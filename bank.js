@@ -1,71 +1,73 @@
-// deposite section
-document.getElementById('deposite-btn').addEventListener('click', function () {
-
+function getInputAmount(idName) {
     // user deposite amount
-    const depositeField = document.getElementById('deposite-amount');
-    const depositeAmount = parseFloat(depositeField.value);
+    const inputFieldValue = document.getElementById(idName);
+    const inputAmount = parseFloat(inputFieldValue.value);
 
-    // user deposite text
-    const depositeTextField = document.getElementById('deposite-balance');
-    const depositeFieldAmount = parseFloat(depositeTextField.innerText);
+    // clear input 
+    inputFieldValue.value = '';
+    return inputAmount;
+};
 
+function setStatement (idName, inputMoney){
+    // user statement text
+    const statementTextField = document.getElementById(idName);
+    const statementFieldAmount = parseFloat(statementTextField.innerText);
+
+    statementTextField.innerText = inputMoney + statementFieldAmount;
+}
+
+function getTotalValue(){
+    const totalBalanceField = document.getElementById('total-balance');
+    const totalBalanceAmount = parseFloat(totalBalanceField.innerText);
+    return totalBalanceAmount;
+}
+
+function updateTotalBalance(inputMoney, isAdd) {
     // total amount text
     const totalBalanceField = document.getElementById('total-balance');
     const totalBalanceAmount = parseFloat(totalBalanceField.innerText);
 
-    // current deposite value
-    const currentDepositeAmount = depositeAmount + depositeFieldAmount;
+    if( isAdd == true){
+        totalBalanceField.innerText = totalBalanceAmount + inputMoney ;
+    }else{
+        totalBalanceField.innerText = totalBalanceAmount - inputMoney ;
+    }
+}
 
-    // total balance after deposite
-    const currentTotalAmount = depositeAmount + totalBalanceAmount;
 
 
-    // set deposite value
-    depositeTextField.innerText = currentDepositeAmount;
-    // set total amount value
-    totalBalanceField.innerText = currentTotalAmount;
 
-    // clear input 
-    depositeField.value = '';
+// deposite section
+document.getElementById('deposite-btn').addEventListener('click', function () {
+
+    const depositeAmount = getInputAmount('deposite-amount');
+    const totalBalanceAmount = getTotalValue();
+
+    if(depositeAmount > 0 ){
+        
+    setStatement ('deposite-balance', depositeAmount);
+
+    updateTotalBalance(depositeAmount, true);
+
+    }
+
+
 })
 
 
 // withraw section
 document.getElementById('withraw-btn').addEventListener('click', function () {
-    // user withraw amount
-    const withrawField = document.getElementById('withraw-amount');
-    const withrawAmount = parseFloat(withrawField.value);
 
-    // user withraw text
-    const withrawTextField = document.getElementById('withraw-balance');
-    const withrawFieldAmount = parseFloat(withrawTextField.innerText);
+    const withrawAmount = getInputAmount('withraw-amount');
+    
+    const totalBalanceAmount = getTotalValue();
+    if(withrawAmount > 0 && withrawAmount <= totalBalanceAmount){
 
-    // total amount text
-    const totalBalanceField = document.getElementById('total-balance');
-    const totalBalanceAmount = parseFloat(totalBalanceField.innerText);
+    setStatement ('withraw-balance', withrawAmount);
 
-    // clear input 
-    withrawField.value = '';
-
-    if (totalBalanceAmount >= withrawAmount) {
-
-
-        // current deposite value
-        const currentWithrawAmount = withrawAmount + withrawFieldAmount;
-
-        // total balance after deposite
-        const currentTotalAmount = totalBalanceAmount - withrawAmount;
-
-
-        // set deposite value
-        withrawTextField.innerText = currentWithrawAmount;
-        // set total amount value
-        totalBalanceField.innerText = currentTotalAmount;
-
-        // clear input 
-        withrawField.value = '';
+    updateTotalBalance(withrawAmount, false);
+    }else{
+        alert("You don't have enough Balance.")
     }
-    else if (totalBalanceAmount < withrawAmount) {
-        alert("Sorry you don't have enough balance!!");
-    }
+
 })
